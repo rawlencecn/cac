@@ -187,10 +187,18 @@ if (mtlsCert && mtlsKey) {
         };
 
         // 2b. inject CA into https.globalAgent (trust CA only, no client private key)
+        //
+        // When https.globalAgent.options.ca is undefined (the default), Node
+        // falls back to its bundled Mozilla root certificates. Assigning
+        // [caData] in that case silently REPLACES the bundle, so subsequent
+        // requests to public-cert endpoints (DigiCert, Let's Encrypt, ...)
+        // through https.globalAgent fail with
+        //   "self-signed certificate in certificate chain".
+        // Seed with tls.rootCertificates so the cac CA augments rather than
+        // replaces the default trust store.
         if (caData && https.globalAgent && https.globalAgent.options) {
-            https.globalAgent.options.ca = https.globalAgent.options.ca
-                ? [].concat(https.globalAgent.options.ca, caData)
-                : [caData];
+            var _rootCAs = https.globalAgent.options.ca || tls.rootCertificates;
+            https.globalAgent.options.ca = [].concat(_rootCAs, caData);
         }
     }
 }
