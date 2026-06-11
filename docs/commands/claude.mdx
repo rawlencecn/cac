@@ -49,6 +49,27 @@ cac claude pin 2.1.81
 
 This writes the version to `~/.cac/envs/<name>/version`. The wrapper resolves this file at launch time, so the change takes effect on the next `claude` invocation.
 
+## update-all
+
+Install a target version if needed, then pin every environment to it.
+
+```bash
+cac claude update-all latest
+cac claude update-all 2.1.81
+```
+
+Use this after installing a new Claude Code release when you want all isolated environments to launch the same binary.
+
+## prune
+
+Remove installed versions that are not pinned by any environment.
+
+```bash
+cac claude prune
+```
+
+This is the bulk cleanup equivalent of running `cac claude uninstall <ver>` for every unused version.
+
 ## uninstall
 
 Remove an installed version. Fails if any environment is using it.

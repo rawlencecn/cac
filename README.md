@@ -90,6 +90,8 @@ cac claude install latest               # 安装最新版
 cac claude install 2.1.81               # 安装指定版本
 cac claude ls                           # 列出已安装版本
 cac claude pin 2.1.81                   # 当前环境切换版本
+cac claude update-all latest            # 所有环境切换到最新版
+cac claude prune                        # 卸载未被环境使用的版本
 cac claude uninstall 2.1.81             # 卸载
 ```
 
@@ -121,6 +123,8 @@ cac ls                                  # = cac env ls
 | `cac claude uninstall <ver>` | 卸载版本 |
 | `cac claude ls` | 列出已安装版本 |
 | `cac claude pin <ver>` | 当前环境绑定版本 |
+| `cac claude update-all [latest\|<ver>]` | 所有环境绑定到同一版本 |
+| `cac claude prune` | 卸载未被任何环境使用的版本 |
 | **环境管理** | |
 | `cac env create <name> [-p proxy] [-c ver] [--clone] [--telemetry mode] [--persona preset]` | 创建环境（自动激活，`--telemetry transparent/stealth/paranoid` 控制遥测，`--persona macos-vscode/...` 用于容器） |
 | `cac env ls` | 列出环境 |
@@ -275,6 +279,8 @@ cac claude install latest               # install latest
 cac claude install 2.1.81               # install specific version
 cac claude ls                           # list installed versions
 cac claude pin 2.1.81                   # pin current env to version
+cac claude update-all latest            # pin all envs to latest
+cac claude prune                        # remove versions unused by any env
 cac claude uninstall 2.1.81             # remove
 ```
 
@@ -306,6 +312,8 @@ Each environment is fully isolated:
 | `cac claude uninstall <ver>` | Remove version |
 | `cac claude ls` | List installed versions |
 | `cac claude pin <ver>` | Pin current env to version |
+| `cac claude update-all [latest\|<ver>]` | Pin all environments to one version |
+| `cac claude prune` | Remove versions unused by any environment |
 | **Environment management** | |
 | `cac env create <name> [-p proxy] [-c ver] [--clone] [--telemetry mode] [--persona preset]` | Create environment (auto-activates, `--telemetry transparent/stealth/paranoid` for telemetry control, `--persona macos-vscode/...` for containers) |
 | `cac env ls` | List environments |

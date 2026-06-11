@@ -5,6 +5,14 @@ description: 版本发布历史和重要变更
 
 所有重要变更记录在此，每个条目关联对应的 PR 或 Issue。
 
+## Unreleased
+
+**功能：批量管理 Claude Code 版本**
+
+- 新增 `cac claude update-all [latest|<ver>]`，必要时先安装目标版本，然后将所有环境锁定到该版本。
+- 新增 `cac claude prune`，移除未被任何环境使用的已安装 Claude Code 版本。
+- 新增 shell 回归测试，覆盖批量锁定和未使用版本清理。
+
 ## v1.5.7
 <sub>2026-04-27</sub>
 

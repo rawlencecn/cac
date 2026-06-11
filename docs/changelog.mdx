@@ -5,6 +5,14 @@ description: Release history and notable changes
 
 All notable changes to this project are documented here. Each entry links to the corresponding PR or issue.
 
+## Unreleased
+
+**Feature: bulk Claude Code version management**
+
+- Added `cac claude update-all [latest|<ver>]` to install a target version if needed and pin every environment to it.
+- Added `cac claude prune` to remove installed Claude Code versions that are not used by any environment.
+- Added a shell regression test covering bulk pinning and unused-version pruning.
+
 ## v1.5.7
 <sub>2026-04-27</sub>
 

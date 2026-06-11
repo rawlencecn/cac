@@ -18,6 +18,8 @@ cmd_help() {
     echo "    $(_green "cac claude install") [latest|ver]   Install Claude Code"
     echo "    $(_green "cac claude ls")                     List installed versions"
     echo "    $(_green "cac claude pin") <ver>              Pin env to a version"
+    echo "    $(_green "cac claude update-all") [latest|ver] Pin all envs to a version"
+    echo "    $(_green "cac claude prune")                  Remove unused versions"
     echo "    $(_green "cac claude uninstall") <ver>        Remove a version"
     echo
 

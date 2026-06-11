@@ -97,6 +97,60 @@ _claude_cmd_uninstall() {
     echo "$(_green_bold "Uninstalled") Claude Code $(_cyan "$ver")"
 }
 
+_claude_cmd_update_all() {
+    local target="${1:-latest}"
+    local ver
+    if [[ "$target" == "latest" ]]; then
+        printf "Fetching latest version ... "
+        ver=$(_fetch_latest_version) || _die "failed to fetch latest version"
+        echo "$(_cyan "$ver")"
+    else
+        ver="$target"
+    fi
+
+    [[ "$ver" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9._-]+)?$ ]] || \
+        _die "invalid version $(_cyan "'$ver'")"
+
+    mkdir -p "$VERSIONS_DIR"
+    _download_version "$ver"
+    _update_latest
+
+    local count=0 env_dir
+    for env_dir in "$ENVS_DIR"/*/; do
+        [[ -d "$env_dir" ]] || continue
+        echo "$ver" > "$env_dir/version"
+        (( count += 1 ))
+    done
+
+    echo "$(_green_bold "Pinned") $count environment(s) -> Claude Code $(_cyan "$ver")"
+}
+
+_claude_cmd_prune() {
+    _update_latest 2>/dev/null || true
+    if [[ ! -d "$VERSIONS_DIR" ]]; then
+        echo "$(_dim "  No versions installed.")"
+        return
+    fi
+
+    local removed=0 ver_dir ver count
+    for ver_dir in "$VERSIONS_DIR"/*/; do
+        [[ -d "$ver_dir" ]] || continue
+        ver=$(basename "$ver_dir")
+        count=$(_envs_using_version "$ver")
+        if [[ "$count" -eq 0 ]]; then
+            rm -rf "${VERSIONS_DIR:?}/$ver"
+            (( removed += 1 ))
+        fi
+    done
+
+    _update_latest 2>/dev/null || true
+    if [[ "$removed" -eq 0 ]]; then
+        echo "$(_dim "  No unused versions to prune.")"
+    else
+        echo "$(_green_bold "Uninstalled") $removed unused version(s)"
+    fi
+}
+
 _claude_cmd_ls() {
     _update_latest 2>/dev/null || true
     if [[ ! -d "$VERSIONS_DIR" ]] || [[ -z "$(ls -A "$VERSIONS_DIR" 2>/dev/null)" ]]; then
@@ -139,6 +193,8 @@ cmd_claude() {
     case "${1:-help}" in
         install)    _claude_cmd_install "${@:2}" ;;
         uninstall)  _claude_cmd_uninstall "${@:2}" ;;
+        update-all) _claude_cmd_update_all "${@:2}" ;;
+        prune)      _claude_cmd_prune ;;
         ls|list)    _claude_cmd_ls ;;
         pin)        _claude_cmd_pin "${@:2}" ;;
         help|-h|--help)
@@ -146,6 +202,8 @@ cmd_claude() {
             echo
             echo "  $(_bold "install") [latest|<ver>]  Install a Claude Code version"
             echo "  $(_bold "uninstall") <ver>         Remove an installed version"
+            echo "  $(_bold "update-all") [latest|<ver>] Pin all environments to a version"
+            echo "  $(_bold "prune")                   Remove installed versions not used by any environment"
             echo "  $(_bold "ls")                      List installed versions"
             echo "  $(_bold "pin") <ver>               Pin current environment to a version"
             ;;
